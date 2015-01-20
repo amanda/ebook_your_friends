@@ -4,7 +4,9 @@ Includes a Python script that uses Twython to read a user's timeline and setup a
 
 # usage
 
-TODO: Make these instructions better. But for now:
+TODO: Make these instructions better.
+But for now:
+
 1. Clone the repo
 2. Edit person_bot.py with the name of the person you want to make a bot out of and the frequency you want the bot to tweet
 3. Setup a Twitter account for your bot and go to dev.twitter.com to make an app and grab its API credentials
