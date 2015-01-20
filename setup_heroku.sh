@@ -2,9 +2,7 @@
 '''script that sets up a python twitter bot on heroku.
 BUT FIRST!
 1. make sure you have a virtualenv set up to make a requirements.txt
-so heroku can install the correct packages!
-2. open the python repl, import nltk, run nltk.download() and download
-"punkt" from the tab and save it to your bot directory.'''
+2. make sure you have the API credentials for your bot''
 
 echo "let's get your bot up and running!"
 read -p "first, what is the name of the twitter bot you want to create? " name
