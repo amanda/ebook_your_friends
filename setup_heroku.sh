@@ -41,7 +41,7 @@ heroku config:set APP_KEY=$APP_KEY APP_SECRET=$APP_SECRET OAUTH_TOKEN=$OAUTH_TOK
 echo ""
 echo "creating the procfile"
 echo ""
-read -p "enter the name of the script that runs your bot? (include the .py) : " script
+read -p "enter the name of the script that runs your bot (include the .py): " script
 echo ""
 cat <<EOF > Procfile
 worker: python $script
@@ -50,8 +50,8 @@ EOF
 echo ""
 echo "pushing to heroku"
 git add .
-git commit -m 'added files'
+git commit -m 'added all files'
 git push heroku master
 heroku ps:scale worker=1
 
-echo "done!"
+echo "done! your bot should now be running on heroku."
