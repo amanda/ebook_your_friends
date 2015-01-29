@@ -1,5 +1,8 @@
 from twython import Twython, TwythonError
 from markov import MarkovGenerator
+
+from math import log
+from random import random
 import os, time
 
 APP_KEY = os.getenv('APP_KEY')
@@ -9,6 +12,12 @@ OAUTH_TOKEN_SECRET = os.getenv('OAUTH_TOKEN_SECRET')
 
 twitter = Twython(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET)
 user = '' #add twitter handle of user you want to ebook, edit!
+
+# time between tweets in seconds
+#   set a minimum because we don't want near-simultaneous tweets
+minimum_interval = 300
+average_interval = 7200
+
 
 def get_tweets(username):
 	try:
@@ -31,8 +40,9 @@ def ebook():
 	status = generate_status(get_tweets(user))
 	try:
 		twitter.update_status(status=status)
-		print status
-		time.sleep(7200) #seconds you want your bot to wait between tweets, edit!
+		print time.strftime('[%y-%m-%dT%H:%M:%S] {}').format(status)
+		time.sleep(minimum_interval - \
+			log(random()) * (average_interval-minimum_interval))
 	except TwythonError as e:
 		print e
 		pass
