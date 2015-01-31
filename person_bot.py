@@ -1,5 +1,5 @@
 from twython import Twython, TwythonError
-from markov import MarkovGenerator
+from markov import MarkovGenerator, twitter_tokenize
 
 from math import log
 from random import random
@@ -30,7 +30,7 @@ def get_tweets(username):
 def generate_status(tweet_list):
 	tweet_text = ' '.join(tweet_list)
 	try:
-		mc = MarkovGenerator(tweet_text, 90)
+		mc = MarkovGenerator(tweet_text, 90, tokenize_fun=twitter_tokenize)
 		status = mc.generate_words()
 		return status
 	except ValueError:

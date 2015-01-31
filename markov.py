@@ -3,14 +3,39 @@ from collections import defaultdict, Counter
 from sys import argv
 import random, operator, bisect, string
 
+
+def default_tokenize(text):
+	#hacky, maybe fix
+	return [w for w in word_tokenize(text) \
+		if w not in string.punctuation \
+		and w != "''" and w != "``"]
+
+
+def twitter_tokenize(text):
+	prefixes = set(['@', '#'])
+	garbage = set(["''", "``"])
+	tokens = word_tokenize(text)
+	result = []
+	for tok in tokens:
+		if result and result[-1] in prefixes:
+			result[-1] = '{}{}'.format(result[-1], tok)
+		elif (tok in string.punctuation or tok in garbage) and tok not in prefixes:
+			pass
+		else:
+			result.append(tok)
+	return result
+
+
+
 '''version of a markov text generator for
 making bots from people's twitter timelines'''
 
 class MarkovGenerator(object):
-	def __init__(self, text, length, ngram=2):
+	def __init__(self, text, length, ngram=2, tokenize_fun=default_tokenize):
 		self.text = text
 		self.length = length
 		self.ngram = ngram
+		self.tokenize_fun = tokenize_fun
 		self.markov_dict = self.make_markov_dict()
 		self.generated_text = self.generate_words()
 
@@ -19,7 +44,7 @@ class MarkovGenerator(object):
 		based on source text'''
 		text = self.text
 		ngram = self.ngram
-		words = [w for w in word_tokenize(text) if w not in string.punctuation and w != "''" and w != "``"] #hacky, maybe fix
+		words = self.tokenize_fun(text)
 		zippy_words = zip(*[words[i:] for i in xrange(ngram)])
 		markov_dict = defaultdict(Counter)
 		for t in zippy_words:
