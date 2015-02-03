@@ -3,9 +3,8 @@ from collections import defaultdict, Counter
 from sys import argv
 import random, operator, bisect, string
 
-
 def default_tokenize(text):
-	#hacky, maybe fix
+	# hacky, maybe fix
 	return [w for w in word_tokenize(text) \
 		if w not in string.punctuation \
 		and w != "''" and w != "``"]
@@ -13,7 +12,7 @@ def default_tokenize(text):
 
 def twitter_tokenize(text):
 	prefixes = set(['@', '#'])
-	garbage = set(["''", "``"])
+	garbage = set(["''", "``", "http"])
 	tokens = word_tokenize(text)
 	result = []
 	for tok in tokens:
@@ -25,12 +24,9 @@ def twitter_tokenize(text):
 			result.append(tok)
 	return result
 
-
-
-'''version of a markov text generator for
-making bots from people's twitter timelines'''
-
 class MarkovGenerator(object):
+	'''version of a markov text generator for
+	making bots from people's twitter timelines'''
 	def __init__(self, text, length, ngram=2, tokenize_fun=default_tokenize):
 		self.text = text
 		self.length = length
@@ -70,7 +66,7 @@ class MarkovGenerator(object):
 	def generate_words(self):
 		'''generates the new text'''
 		def tup_to_words(tuple_list):
-			'''list of tuples -> string
+			'''(list of tuples) -> string
 			helper function'''
 			word_list = [x[0] for x in tuple_list[1:-1]] + list(tuple_list[-1])
 			words = ''
@@ -80,7 +76,7 @@ class MarkovGenerator(object):
 				else:
 					words = words.strip() + i + ' '
 			return words.strip()
-		start_tup = random.choice(self.markov_dict.keys()) #let me tell you about my startup
+		start_tup = random.choice(self.markov_dict.keys()) # let me tell you about my startup
 		words_length = 0
 		words_tuples = [start_tup]
 		while words_length < self.length:
