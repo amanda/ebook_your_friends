@@ -1,18 +1,25 @@
+#!usr/bin/env python
+# -*- coding: utf-8 -*-
+
 from nltk import word_tokenize
 from collections import defaultdict, Counter
 from sys import argv
-import random, operator, bisect, string
+import random, operator, bisect, string, re
+import traceback
 
+
+'''token cleanup functions'''
 def default_tokenize(text):
-	# hacky, maybe fix
-	return [w for w in word_tokenize(text) \
-		if w not in string.punctuation \
+	'''gets rid of unnecessary quotes'''
+	return [w for w in word_tokenize(text)
+		if w not in string.punctuation
 		and w != "''" and w != "``"]
 
-
 def twitter_tokenize(text):
+	'''fixes hashtags and @replies
+	that are separated by nltk's tokenizer'''
 	prefixes = set(['@', '#'])
-	garbage = set(["''", "``", "http"])
+	garbage = set(["''", "``", "“”“", 'http', 'https'])
 	tokens = word_tokenize(text)
 	result = []
 	for tok in tokens:
@@ -24,20 +31,50 @@ def twitter_tokenize(text):
 			result.append(tok)
 	return result
 
+
+'''text cleanup functions'''
+def fix_apostrophes(text):
+	'''no space between end of word and apostrophe, 
+	friend 's becomes friend's'''
+	return re.sub(r"(\w)\s'(\w)", r"\1'\2", text)
+
+def fix_nt(text):
+	'''fixes issue with words ending in n't,
+	is n't becomes isn't, do n't becomes don't'''
+	return re.sub(r"(\w)\sn't", r"\1n't", text)
+
+def fix_links(text):
+	'''gets rid of poorly formatted t.co links'''
+	no_tco =  re.sub(r"(//t\.co/\w+)", r"", text)
+	return re.sub(r"(\s)\s", r"\1", no_tco)
+
+def fix_therest(text):
+	'''hacky tool to replace other stuff that has
+	been consistently wrong'''
+	gonna = re.sub(r'gon na', r'gonna', text)
+	pass
+
+def fix_random_hashtags(text):
+	return re.sub(r'#?', r'', text)
+
+def final_cleanup(text):
+	'''run on generated text to do all cleanup'''
+	clean = fix_apostrophes(fix_nt(fix_links(text)))
+	if clean[-2] == (' ' or '.'):
+		clean = clean[:-2] + '.'
+	return clean
+
 class MarkovGenerator(object):
-	'''version of a markov text generator for
-	making bots from people's twitter timelines'''
+	'''markov text generator for making bots from people's twitter timelines'''
 	def __init__(self, text, length, ngram=2, tokenize_fun=default_tokenize):
 		self.text = text
 		self.length = length
 		self.ngram = ngram
 		self.tokenize_fun = tokenize_fun
 		self.markov_dict = self.make_markov_dict()
-		self.generated_text = self.generate_words()
 
 	def make_markov_dict(self):
-		'''populates a dict of word: ngram
-		based on source text'''
+		'''returns a dict of {word: ngram} based on twitter timeline'''
 		text = self.text
 		ngram = self.ngram
 		words = self.tokenize_fun(text)
@@ -49,7 +86,7 @@ class MarkovGenerator(object):
 		return markov_dict
 
 	def choose_word(self, start_key):
-		'''chooses a next word based on cumulative distribution
+		'''returns word based on cumulative distribution
 		likelihood that it follows the start_key'''
 		def accumulate(iterable, func=operator.add):
 			it = iter(iterable)
@@ -63,11 +100,8 @@ class MarkovGenerator(object):
 		rando = random.random() * cumulative_distribution[-1]
 		return choices[bisect.bisect(cumulative_distribution, rando)]
 
-	def generate_words(self):
-		'''generates the new text'''
-		def tup_to_words(tuple_list):
-			'''(list of tuples) -> string
-			helper function'''
+	def ngrams_to_words(self, tuple_list):
+			'''(list of ngram tuples) -> string'''
 			word_list = [x[0] for x in tuple_list[1:-1]] + list(tuple_list[-1])
 			words = ''
 			for i in word_list:
@@ -76,7 +110,10 @@ class MarkovGenerator(object):
 				else:
 					words = words.strip() + i + ' '
 			return words.strip()
-		start_tup = random.choice(self.markov_dict.keys()) # let me tell you about my startup
+
+	def generate_words(self):
+		'''generates the new tweet'''
+		start_tup = random.choice(self.markov_dict.keys())
 		words_length = 0
 		words_tuples = [start_tup]
 		while words_length < self.length:
@@ -85,5 +122,5 @@ class MarkovGenerator(object):
 			words_length += len(next_word) + 1
 			words_tuples.append(next_tup)
 		words_tuples.append(('.',))
-		self.generated_text = tup_to_words(words_tuples)
-		return self.generated_text
+		self.generated_text = self.ngrams_to_words(words_tuples)
+		return final_cleanup(self.generated_text)
