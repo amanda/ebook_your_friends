@@ -17,7 +17,7 @@ def twitter_tokenize(text):
     '''fixes hashtags and @replies
     that are separated by nltk's tokenizer'''
     prefixes = set(['@', '#'])
-    garbage = set(["''", "``", "“”“", 'http', 'https'])
+    garbage = set(["''", "``", "“”“", "http", "https", "n't"])
     tokens = word_tokenize(text)
     result = []
     for tok in tokens:
