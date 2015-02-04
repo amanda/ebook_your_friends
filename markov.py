@@ -35,7 +35,7 @@ def twitter_tokenize(text):
 '''text cleanup functions'''
 def fix_apostrophes(text):
 	'''no space between end of word and apostrophe, 
-	friend 's becomes friend's'''
+	friend 's becomes friend's', i 'm becomes i'm'''
 	return re.sub(r"(\w)\s'(\w)", r"\1'\2", text)
 
 def fix_nt(text):
@@ -43,26 +43,28 @@ def fix_nt(text):
 	is n't becomes isn't, do n't becomes don't'''
 	return re.sub(r"(\w)\sn't", r"\1n't", text)
 
-def fix_links(text):
+def fix_tco(text):
 	'''gets rid of poorly formatted t.co links'''
-	no_tco =  re.sub(r"(//t\.co/\w+)", r"", text)
+	no_tco = re.sub(r"(//t\.co/\w+)", r"", text)
 	return re.sub(r"(\s)\s", r"\1", no_tco)
+
+def fix_hashtags(text):
+	clean = re.sub(r'(#|#\s)\1*', r'', text)
+	return clean.strip()
 
 def fix_therest(text):
 	'''hacky tool to replace other stuff that has
 	been consistently wrong'''
 	gonna = re.sub(r'gon na', r'gonna', text)
-	pass
-
-def fix_random_hashtags(text):
-	return re.sub(r'#?', r'', text)
+	return gonna
 
 def final_cleanup(text):
 	'''run on generated text to do all cleanup'''
-	clean = fix_apostrophes(fix_nt(fix_links(text)))
+	clean = fix_apostrophes(fix_nt(fix_tco(fix_hashtags(fix_therest(text)))))
 	if clean[-2] == (' ' or '.'):
 		clean = clean[:-2] + '.'
 	return clean
+
 
 class MarkovGenerator(object):
 	'''markov text generator for making bots from people's twitter timelines'''
