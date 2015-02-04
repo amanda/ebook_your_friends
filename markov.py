@@ -5,8 +5,6 @@ from nltk import word_tokenize
 from collections import defaultdict, Counter
 from sys import argv
 import random, operator, bisect, string, re
-import traceback
-
 
 '''token cleanup functions'''
 def default_tokenize(text):

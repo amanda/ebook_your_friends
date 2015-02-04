@@ -34,7 +34,7 @@ def generate_status(tweet_list):
     tweet_text = ' '.join(tweet_list)
     try:
         mc = MarkovGenerator(tweet_text, 90, tokenize_fun=twitter_tokenize)
-        status = mc.generate_words()
+        status = mc.generate_words().lower()
         return status
     except ValueError as e:
         print e
