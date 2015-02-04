@@ -8,7 +8,8 @@ If you just want to make a single "ebook" account for yourself or a friend, foll
 
 1. Clone the repo
 2. Edit person_bot.py with the twitter handle (do not include the "@") of the person you want to make a bot of
-3. Setup a new Twitter account for your bot, and go to [apps.twitter.com](https://apps.twitter.com/), create a new application, and grab its API credentials
-4. follow the prompts from ```source setup_heroku.sh``` (make sure you have a virtualenv set up, git installed, and a Heroku account)
+3. Setup a new Twitter account for your bot
+4. Go to [apps.twitter.com](https://apps.twitter.com/), create a new application, and grab its API credentials
+5. follow the prompts from ```source setup_heroku.sh``` (make sure you have a virtualenv set up, git installed, and a Heroku account)
 
 Have fun (◡ ‿ ◡ ✿)
