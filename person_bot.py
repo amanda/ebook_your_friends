@@ -18,38 +18,40 @@ minimum_interval = 300
 average_interval = 7200
 
 def get_tweets(username):
-	'''(str) -> list of strings,
-	fetches last 200 tweets from specified user'''
-	try:
-		user_timeline = twitter.get_user_timeline(screen_name=username, count=200, include_rts=False, exclude_replies=True)
-		tweets = [user_timeline[i]['text'] for i in range(len(user_timeline) - 1)]
-		return tweets
-	except TwythonError as e:
-		return e
+    '''(str) -> list of tweets,
+    fetches last 200 tweets from specified user'''
+    try:
+        user_timeline = twitter.get_user_timeline(screen_name=username, count=200, include_rts=False, exclude_replies=True)
+        tweets = [user_timeline[i]['text'] for i in range(len(user_timeline) - 1)]
+        return tweets
+    except TwythonError as e:
+        print e
+        return e
 
 def generate_status(tweet_list):
-	'''(list) -> str,
-	returns markov-generated status'''
-	tweet_text = ' '.join(tweet_list)
-	try:
-		mc = MarkovGenerator(tweet_text, 90, tokenize_fun=twitter_tokenize)
-		status = mc.generate_words()
-		return status
-	except ValueError:
-		pass
+    '''(list) -> str,
+    returns markov-generated status'''
+    tweet_text = ' '.join(tweet_list)
+    try:
+        mc = MarkovGenerator(tweet_text, 90, tokenize_fun=twitter_tokenize)
+        status = mc.generate_words()
+        return status
+    except ValueError as e:
+        print e
+        pass
 
 def ebook():
-	'''posts generated status to twitter'''
-	status = generate_status(get_tweets(user))
-	try:
-		twitter.update_status(status=status)
-		print time.strftime('[%y-%m-%dT%H:%M:%S] {}').format(status)
-		time.sleep(minimum_interval - \
-			log(random()) * (average_interval-minimum_interval))
-	except TwythonError as e:
-		print e
-		pass
+    '''posts generated status to twitter'''
+    status = generate_status(get_tweets(user))
+    try:
+        twitter.update_status(status=status)
+        print time.strftime('[%y-%m-%dT%H:%M:%S] {}').format(status)
+        time.sleep(minimum_interval -
+            log(random()) * (average_interval-minimum_interval))
+    except TwythonError as e:
+        print e
+        pass
 
 if __name__ == '__main__':
-	while  True:
-		ebook()
+    while  True:
+        ebook()

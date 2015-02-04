@@ -1,6 +1,8 @@
 #!bin/bash
+
 '''script that sets up a python twitter bot on heroku.
 BUT FIRST!
+0. make sure you have git installed
 1. make sure you have a virtualenv set up to make a requirements.txt
 2. make sure you have the API credentials for your bot'''
 
@@ -8,7 +10,6 @@ echo "let's get your bot up and running!"
 read -p "first, what is the name of the twitter bot you want to create? " name
 echo ""
 
-#setup app
 echo "initializing git repo and creating requirements.txt"
 git init
 pip freeze > requirements.txt
@@ -55,3 +56,4 @@ git push heroku master
 heroku ps:scale worker=1
 
 echo "done! your bot should now be running on heroku."
+echo "type heroku logs --tail to check and see if your bot is running."

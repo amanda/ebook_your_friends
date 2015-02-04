@@ -1,13 +1,14 @@
 # ebook_your_friends
 
-Includes a Python script that uses Twython to read a user's timeline and setup a Twitter bot, a Markov text generator to generate tweets based on a user timeline, and a shell script to setup the bot on Heroku.
+A Python script (person_bot.py) that uses the Twython Twitter API wrapper to read tweets from a user's timeline and post Markov-generated tweets to a bot account, a Markov text generator (markov.py) to generate tweets, and a shell script (setup_heroku.sh) to get the bot automatically tweeting on Heroku.
 
 # usage
 
-TODO: Make these instructions better.
-But for now:
+If you just want to make a single "ebook" account for yourself or a friend, follow these instructions:
 
 1. Clone the repo
-2. Edit person_bot.py with the name of the person you want to make a bot out of and the frequency you want the bot to tweet
-3. Setup a Twitter account for your bot and go to dev.twitter.com to make an app and grab its API credentials
-4. ```source setup_heroku.sh``` (make sure you have a Heroku account)
+2. Edit person_bot.py with the twitter handle (do not include the "@") of the person you want to make a bot of
+3. Setup a new Twitter account for your bot, and go to [apps.twitter.com](https://apps.twitter.com/), create a new application, and grab its API credentials
+4. follow the prompts from ```source setup_heroku.sh``` (make sure you have a virtualenv set up, git installed, and a Heroku account)
+
+Have fun (◡ ‿ ◡ ✿)
