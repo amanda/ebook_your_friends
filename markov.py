@@ -17,7 +17,7 @@ def twitter_tokenize(text):
     '''fixes hashtags and @replies
     that are separated by nltk's tokenizer'''
     prefixes = set(['@', '#'])
-    garbage = set(["''", "``", "“”“", "http", "https", "n't"])
+    garbage = set(["''", "``", "http", "https", "n't"])
     tokens = word_tokenize(text)
     result = []
     for tok in tokens:
@@ -28,7 +28,6 @@ def twitter_tokenize(text):
         else:
             result.append(tok)
     return result
-
 
 '''text cleanup functions'''
 def fix_apostrophes(text):
@@ -53,8 +52,9 @@ def fix_hashtags(text):
 def fix_therest(text):
     '''hacky tool to replace other stuff that has
     been consistently wrong'''
-    gonna = re.sub(r'gon na', r'gonna', text)
-    return gonna
+    gonna_hack = re.sub(r'gon na', r'gonna', text)
+    quote_hack = re.sub(r"“”“", r'', gonna)
+    return quote_hack
 
 def final_cleanup(text):
     '''run on generated text to do all cleanup'''
@@ -74,11 +74,12 @@ class MarkovGenerator(object):
         self.markov_dict = self.make_markov_dict()
 
     def make_markov_dict(self):
-        '''returns a dict of {word: ngram} based on twitter timeline'''
+        '''returns a dict of {ngram tuple: Counter} 
+        counting the number of times words follow an ngram'''
         text = self.text
         ngram = self.ngram
         words = self.tokenize_fun(text)
-        zippy_words = zip(*[words[i:] for i in xrange(ngram)])
+        zippy_words = zip(*[words[i:] for i in xrange(ngram + 1)])
         markov_dict = defaultdict(Counter)
         for t in zippy_words:
             a, b = t[:-1], t[-1]
@@ -86,8 +87,8 @@ class MarkovGenerator(object):
         return markov_dict
 
     def choose_word(self, start_key):
-        '''returns word based on cumulative distribution
-        likelihood that it follows the start_key'''
+        '''returns a next word based on cumulative distribution
+        likelihood that it follows the previous ngram'''
         def accumulate(iterable, func=operator.add):
             it = iter(iterable)
             total = next(it)
@@ -101,18 +102,19 @@ class MarkovGenerator(object):
         return choices[bisect.bisect(cumulative_distribution, rando)]
 
     def ngrams_to_words(self, tuple_list):
-            '''(list of ngram tuples) -> string'''
-            word_list = [x[0] for x in tuple_list[1:-1]] + list(tuple_list[-1])
-            words = ''
-            for i in word_list:
-                if i not in string.punctuation:
-                    words += i + ' '
-                else:
-                    words = words.strip() + i + ' '
-            return words.strip()
+        '''(list of ngram tuples) -> string
+        helper function for generate_words'''
+        word_list = [x[0] for x in tuple_list[1:-1]] + list(tuple_list[-1])
+        words = ''
+        for i in word_list:
+            if i not in string.punctuation:
+                words += i + ' '
+            else:
+                words = words.strip() + i + ' '
+        return words.strip()
 
     def generate_words(self):
-        '''generates the new tweet'''
+        '''generates tweet text'''
         start_tup = random.choice(self.markov_dict.keys())
         words_length = 0
         words_tuples = [start_tup]
