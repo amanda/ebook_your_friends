@@ -4,14 +4,21 @@
 from nltk import word_tokenize
 from collections import defaultdict, Counter
 from sys import argv
-import random, operator, bisect, string, re
+import random
+import operator
+import bisect
+import string
+import re
 
-'''token cleanup functions'''
+# token cleanup functions
+
+
 def default_tokenize(text):
     '''gets rid of unnecessary quotes'''
     return [w for w in word_tokenize(text)
-        if w not in string.punctuation
-        and w != "''" and w != "``"]
+            if w not in string.punctuation
+            and w != "''" and w != "``"]
+
 
 def twitter_tokenize(text):
     '''fixes hashtags and @replies
@@ -29,25 +36,31 @@ def twitter_tokenize(text):
             result.append(tok)
     return result
 
-'''text cleanup functions'''
+# text cleanup functions
+
+
 def fix_apostrophes(text):
     '''no space between end of word and apostrophe, 
     friend 's becomes friend's', i 'm becomes i'm'''
     return re.sub(r"(\w)\s'(\w)", r"\1'\2", text)
+
 
 def fix_nt(text):
     '''fixes issue with words ending in n't,
     is n't becomes isn't, do n't becomes don't'''
     return re.sub(r"(\w)\sn't", r"\1n't", text)
 
+
 def fix_tco(text):
     '''gets rid of poorly formatted t.co links'''
     no_tco = re.sub(r"(//t\.co/\w+)", r"", text)
     return re.sub(r"(\s)\s", r"\1", no_tco)
 
+
 def fix_hashtags(text):
     clean = re.sub(r'(#|#\s)\1*', r'', text)
     return clean.strip()
+
 
 def fix_therest(text):
     '''hacky tool to replace other stuff that has
@@ -55,6 +68,7 @@ def fix_therest(text):
     gonna_hack = re.sub(r'gon na', r'gonna', text)
     quote_hack = re.sub(r"“”“", r'', gonna)
     return quote_hack
+
 
 def final_cleanup(text):
     '''run on generated text to do all cleanup'''
@@ -65,7 +79,9 @@ def final_cleanup(text):
 
 
 class MarkovGenerator(object):
+
     '''markov text generator for making bots from people's twitter timelines'''
+
     def __init__(self, text, length, ngram=2, tokenize_fun=default_tokenize):
         self.text = text
         self.length = length
