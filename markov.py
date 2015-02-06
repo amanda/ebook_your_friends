@@ -66,7 +66,7 @@ def fix_therest(text):
     '''hacky tool to replace other stuff that has
     been consistently wrong'''
     gonna_hack = re.sub(r'gon na', r'gonna', text)
-    quote_hack = re.sub(r"“”“", r'', gonna)
+    quote_hack = re.sub(r"“”“", r'', gonna_hack)
     return quote_hack
 
 
