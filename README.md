@@ -2,6 +2,10 @@
 
 A Python script (person_bot.py) that uses the Twython Twitter API wrapper to read tweets from a user's timeline and post Markov-generated tweets to a bot account, a Markov text generator (markov.py) to generate tweets, and a shell script (setup_heroku.sh) to get the bot automatically tweeting on Heroku.
 
+## requirements
+- Twython
+- ntlk
+
 ## usage
 
 If you just want to make a single "ebook" account for yourself or a friend, follow these instructions. For a more detailed tutorial on making Twitter bots using this repo, read [this blog post](http://programmingforwitches.tumblr.com/post/110169568366/ebook-your-friends).
