@@ -6,7 +6,7 @@ A Python script (person_bot.py) that uses the Twython Twitter API wrapper to rea
 
 If you just want to make a single "ebook" account for yourself or a friend, follow these instructions. For a more detailed tutorial on making Twitter bots using this repo, read [this blog post](http://programmingforwitches.tumblr.com/post/110169568366/ebook-your-friends).
 
-1. Clone the repo
+1. Clone the repo and install requirements using pip: ```pip install -r requirements.txt```
 2. Edit person_bot.py with the twitter handle (do not include the "@") of the person you want to make a bot of
 3. Setup a new Twitter account for your bot
 4. Go to [apps.twitter.com](https://apps.twitter.com/), create a new application, and grab its API credentials
