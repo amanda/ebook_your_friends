@@ -52,3 +52,6 @@ docs/_build/
 
 # PyBuilder
 target/
+
+# setup file for local testing
+.setup
