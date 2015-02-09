@@ -18,3 +18,7 @@ If you just want to make a single "ebook" account for yourself or a friend, foll
 6. ```source setup_heroku.sh``` and follow the prompts to get your bot tweeting automatically with Heroku (make sure you have git installed and a Heroku account)
 
 Have fun (◡ ‿ ◡ ✿)
+
+## examples
+
+I've used this framework to make [a few bots for my friends](https://twitter.com/saintrosa/lists/friend-ebooks).
