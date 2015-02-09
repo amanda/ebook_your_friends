@@ -140,5 +140,5 @@ class MarkovGenerator(object):
             words_length += len(next_word) + 1
             words_tuples.append(next_tup)
         words_tuples.append(('.',))
-        self.generated_text = self.ngrams_to_words(words_tuples)
-        return final_cleanup(self.generated_text)
+        generated_text = self.ngrams_to_words(words_tuples)
+        return final_cleanup(generated_text)
