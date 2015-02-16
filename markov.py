@@ -67,7 +67,10 @@ def fix_therest(text):
     been consistently wrong'''
     nna_hack = re.sub(r'n na', r'nna', text)
     quote_hack = re.sub(r"“”“", r'', nna_hack)
-    return quote_hack
+    if quote_hack[0:2] == "'s":
+        clean = quote_hack[3:]
+    return clean
+
 
 def final_cleanup(text):
     '''run on generated text to do all cleanup'''
