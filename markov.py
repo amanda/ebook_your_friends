@@ -65,10 +65,9 @@ def fix_hashtags(text):
 def fix_therest(text):
     '''hacky tool to replace other stuff that has
     been consistently wrong'''
-    gonna_hack = re.sub(r'gon na', r'gonna', text)
-    quote_hack = re.sub(r"“”“", r'', gonna_hack)
+    nna_hack = re.sub(r'n na', r'nna', text)
+    quote_hack = re.sub(r"“”“", r'', nna_hack)
     return quote_hack
-
 
 def final_cleanup(text):
     '''run on generated text to do all cleanup'''
