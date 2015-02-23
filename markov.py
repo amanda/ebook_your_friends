@@ -69,6 +69,8 @@ def fix_therest(text):
     quote_hack = re.sub(r"“”“", r'', nna_hack)
     if quote_hack[0:2] == "'s":
         clean = quote_hack[3:]
+    else:
+        clean = quote_hack
     return clean
 
 
