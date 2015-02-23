@@ -21,31 +21,13 @@ average_interval = 7200
 
 def get_tweets(username):
     '''(str) -> list of tweets,
-    fetches last 3200 tweets from specified user'''
+    fetches last 200 tweets from specified user'''
     try:
-        tweets = []
-        max_id = None
-        for _ in range(16):
-            if max_id is None:
-                user_timeline = twitter.get_user_timeline(
-                    screen_name=username, count=200,
-                    include_rts=False, exclude_replies=True)
-            else:
-                user_timeline = twitter.get_user_timeline(
-                    screen_name=username, count=200,
-                    include_rts=False, exclude_replies=True,
-                    max_id=max_id)
-            new_tweets = [user_timeline[i]['text']
-                      for i in range(len(user_timeline))]
-            if len(new_tweets) == 0:
-                return tweets
-            tweets += new_tweets
-            max_id = min([user_timeline[i]['id']
-                          for i in range(len(user_timeline))])
-            max_id -= 1  # max_id is inclusive, so sub 1 to avoid repeats.
-
+        user_timeline = twitter.get_user_timeline(
+            screen_name=username, count=200, include_rts=False, exclude_replies=True)
+        tweets = [user_timeline[i]['text']
+                  for i in range(len(user_timeline) - 1)]
         return tweets
-
     except TwythonError as e:
         print e
         return e
