@@ -22,3 +22,7 @@ Have fun (◡ ‿ ◡ ✿)
 ## examples
 
 I've used this framework to make [a few bots for my friends](https://twitter.com/saintrosa/lists/friend-ebooks).
+
+## todo
+
+- add @ reply functionality
