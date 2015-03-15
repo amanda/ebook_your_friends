@@ -2,6 +2,7 @@ from twython import Twython, TwythonError
 from markov import MarkovGenerator, twitter_tokenize
 from math import log
 from random import random
+import argparse
 import os
 import time
 
@@ -11,7 +12,6 @@ OAUTH_TOKEN = os.getenv('OAUTH_TOKEN')
 OAUTH_TOKEN_SECRET = os.getenv('OAUTH_TOKEN_SECRET')
 
 twitter = Twython(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET)
-user = ''  # add twitter handle of user you want to ebook, edit!
 
 '''time between tweets in seconds
 set a minimum because we don't want near-simultaneous tweets'''
@@ -81,21 +81,22 @@ def get_new_tweets(username, since_id):
         return e
 
 
-def post_tweet_from_generator(generator):
+def post_tweet_from_generator(generator, args):
     '''generates a status, posts it to twitter and logs it'''
     status = generator.generate_words().lower()
     try:
-        twitter.update_status(status=status)
+        if not args.dry_run:
+            twitter.update_status(status=status)
         print time.strftime('[%y-%m-%dT%H:%M:%S] {}').encode('utf-8').format(status)
         time.sleep(minimum_interval -
                    log(random()) * (average_interval - minimum_interval))
     except TwythonError as e:
         print e
-        pass
 
-def ebook():
+
+def ebook(args):
     '''the loop with all the action'''
-    tweet_list, since_id = get_tweets(user)
+    tweet_list, since_id = get_tweets(args.user)
     update_markov = True
     while True:
         if update_markov:
@@ -103,15 +104,26 @@ def ebook():
             mc = MarkovGenerator(tweet_text, 90, tokenize_fun=twitter_tokenize)
             update_markov = False
 
-        post_tweet_from_generator(mc)
+        post_tweet_from_generator(mc, args)
 
         # download new tweets
-        new_tweet_list, new_since_id = get_new_tweets(user, since_id)
+        new_tweet_list, new_since_id = get_new_tweets(args.user, since_id)
         if len(new_tweet_list) != 0:
             tweet_list += new_tweet_list
             since_id = new_since_id
             update_markov = True
 
 
-if __name__ == "__main__":
-    ebook()
+def main():
+    parser = argparse.ArgumentParser(description='ebook your friends!!!')
+    parser.add_argument('user', action='store', help='the user who you want to "ebook"')
+    parser.add_argument('--dry-run', action='store_true',
+                        help="run the bot logic but don't actually tweet; " +
+                        "still connects to Twitter to fetch existing tweets")
+    args = parser.parse_args()
+    while True:
+        ebook(args)
+
+
+if __name__ == '__main__':
+    main()
