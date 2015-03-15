@@ -81,11 +81,12 @@ def get_new_tweets(username, since_id):
         return e
 
 
-def post_tweet_from_generator(generator):
+def post_tweet_from_generator(generator, args):
     '''generates a status, posts it to twitter and logs it'''
     status = generator.generate_words().lower()
     try:
-        twitter.update_status(status=status)
+        if not args.dry_run:
+            twitter.update_status(status=status)
         print time.strftime('[%y-%m-%dT%H:%M:%S] {}').encode('utf-8').format(status)
         time.sleep(minimum_interval -
                    log(random()) * (average_interval - minimum_interval))
@@ -103,7 +104,7 @@ def ebook(args):
             mc = MarkovGenerator(tweet_text, 90, tokenize_fun=twitter_tokenize)
             update_markov = False
 
-        post_tweet_from_generator(mc)
+        post_tweet_from_generator(mc, args)
 
         # download new tweets
         new_tweet_list, new_since_id = get_new_tweets(args.user, since_id)
@@ -116,6 +117,9 @@ def ebook(args):
 def main():
     parser = argparse.ArgumentParser(description='ebook your friends!!!')
     parser.add_argument('user', action='store', help='the user who you want to "ebook"')
+    parser.add_argument('--dry-run', action='store_true',
+                        help="run the bot logic but don't actually tweet; " +
+                        "still connects to Twitter to fetch existing tweets")
     args = parser.parse_args()
     while True:
         ebook(args)
