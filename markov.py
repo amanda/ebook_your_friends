@@ -67,22 +67,30 @@ def fix_therest(text):
     been consistently wrong'''
     nna_hack = re.sub(r'n na', r'nna', text)
     quote_hack = re.sub(r"“”“", r'', nna_hack)
-    if quote_hack[0:2] == "'s":
-        clean = quote_hack[3:]
+    ellipsis_hack = re.sub(r"(\s...\s)|(\s...\s...\s)", r"...", quote_hack)
+    if ellipsis_hack[0:2] == "'s":
+        clean = ellipsis_hack[3:]
     else:
-        clean = quote_hack
+        clean = ellipsis_hack
     return clean
 
 
 def final_cleanup(text):
     '''run on generated text to do all cleanup'''
-    clean = fix_apostrophes(fix_nt(fix_tco(fix_hashtags(fix_therest(text)))))
+    # clean = fix_apostrophes(fix_nt(fix_tco(fix_hashtags(fix_therest(text)))))
+    one = fix_apostrophes(text)
+    two = fix_nt(one)
+    three = fix_tco(two)
+    four = fix_hashtags(three)
+    clean = fix_therest(four)
     if clean[-2] == (' ' or '.'):
         clean = clean[:-2] + '.'
     return clean
 
+# markov generator object
 
-class MarkovGenerator(object):
+
+class MarkovGenerator():
 
     '''markov text generator for making bots from people's twitter timelines'''
 
