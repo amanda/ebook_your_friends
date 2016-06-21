@@ -38,10 +38,10 @@ echo -e "\nsetting heroku config variables"
 heroku config:set APP_KEY=$TWITTERBOT_APP_KEY APP_SECRET=$TWITTERBOT_APP_SECRET OAUTH_TOKEN=$TWITTERBOT_OAUTH_TOKEN OAUTH_TOKEN_SECRET=$TWITTERBOT_OAUTH_TOKEN_SECRET
 
 echo -e "\ncreating the procfile\n"
-read -p "enter the name of the script that runs your bot (include the .py): " script
-echo ""
+read -p "\nenter the name of the script that runs your bot (include the .py): \n" script
+read -p "\nenter the name of the person you want to bot: \n" user
 cat <<EOF > Procfile
-worker: python $script
+worker: python $script -u $user
 EOF
 
 echo -e "\npushing to heroku\n"
