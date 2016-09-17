@@ -1,4 +1,4 @@
-#!usr/bin/env python
+#! usr/bin/env python
 # -*- coding: utf-8 -*-
 
 from nltk import word_tokenize
@@ -21,7 +21,7 @@ def default_tokenize(text):
 
 
 def twitter_tokenize(text):
-    '''fixes hashtags and @replies
+    '''fixes hashtags and @ replies
     that are separated by nltk's tokenizer'''
     prefixes = set(['@', '#'])
     garbage = set(["''", "``", "http", "https", "n't"])
@@ -40,7 +40,7 @@ def twitter_tokenize(text):
 
 
 def fix_apostrophes(text):
-    '''no space between end of word and apostrophe, 
+    '''no space between end of word and apostrophe,
     friend 's becomes friend's', i 'm becomes i'm'''
     return re.sub(r"(\w)\s'(\w)", r"\1'\2", text)
 
@@ -102,7 +102,7 @@ class MarkovGenerator():
         self.markov_dict = self.make_markov_dict()
 
     def make_markov_dict(self):
-        '''returns a dict of {ngram tuple: Counter} 
+        '''returns a dict of {ngram tuple: Counter}
         counting the number of times words follow an ngram'''
         text = self.text
         ngram = self.ngram

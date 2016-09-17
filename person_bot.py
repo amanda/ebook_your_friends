@@ -1,10 +1,11 @@
-from twython import Twython, TwythonError
-from markov import MarkovGenerator, twitter_tokenize
 from math import log
 from random import random
 import argparse
 import os
 import time
+from twython import Twython, TwythonError
+from markov import MarkovGenerator, twitter_tokenize
+
 
 APP_KEY = os.getenv('APP_KEY')
 APP_SECRET = os.getenv('APP_SECRET')
@@ -15,8 +16,8 @@ twitter = Twython(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET)
 
 '''time between tweets in seconds
 set a minimum because we don't want near-simultaneous tweets'''
-minimum_interval = 300
-average_interval = 7200
+minimum_interval = 21600
+average_interval = 43200
 
 
 def tweets_from_timeline(timeline):
@@ -115,11 +116,12 @@ def ebook(args):
 
 
 def main():
+    '''get the args, run ebook() indefinitely'''
     parser = argparse.ArgumentParser(description='ebook your friends!!!')
     parser.add_argument('user', action='store', help='the user who you want to "ebook"')
     parser.add_argument('--dry-run', action='store_true',
-                        help="run the bot logic but don't actually tweet; " +
-                        "still connects to Twitter to fetch existing tweets")
+                        help="run the bot logic but don't actually tweet. " +
+                        "still connects to Twitter to fetch existing tweets!")
     args = parser.parse_args()
     while True:
         ebook(args)
