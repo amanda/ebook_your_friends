@@ -19,9 +19,11 @@ class TestCleanup(unittest.TestCase):
         s1 = "do n't do that"
         s2 = "that is n't cool"
         s3 = "that does n't work"
+        s4 = "n't hear what that horse is very well done check it's first php function has pledged to diff-so-fancy."
         self.assertEqual("don't do that", fix_nt(s1))
         self.assertEqual("that isn't cool", fix_nt(s2))
         self.assertEqual("that doesn't work", fix_nt(s3))
+        self.assertEqual("hear what that horse is very well done check it's first php function has pledged to diff-so-fancy.", fix_nt(s4))
 
     def test_tco(self):
         s1 = "cool tweet here //t.co/djskadhla yep"

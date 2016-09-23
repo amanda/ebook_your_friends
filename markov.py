@@ -3,12 +3,12 @@
 
 from nltk import word_tokenize
 from collections import defaultdict, Counter
-from sys import argv
 import random
 import operator
 import bisect
 import string
 import re
+
 
 # token cleanup functions
 
@@ -48,7 +48,7 @@ def fix_apostrophes(text):
 def fix_nt(text):
     '''fixes issue with words ending in n't,
     is n't becomes isn't, do n't becomes don't'''
-    return re.sub(r"(\w)\sn't", r"\1n't", text)
+    return re.sub(r"n't", r"\1n't", text)
 
 
 def fix_tco(text):
